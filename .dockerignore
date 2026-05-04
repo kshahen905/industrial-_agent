@@ -1,0 +1,8 @@
+venv/
+__pycache__/
+.pytest_cache/
+memory/
+vector_db/
+.git/
+.vscode/
+*.pyc

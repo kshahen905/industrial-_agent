@@ -1,0 +1,13 @@
+2026-03-06 10:15:23 ERROR [docker-daemon]: Error response from daemon: driver failed programming external connectivity on endpoint nginx_container (b8c4a7f9d5e8): Error starting userland proxy: listen tcp 0.0.0.0:80: bind: address already in use
+
+2026-03-06 10:16:45 WARNING [docker-engine]: Container d4e5f6g7h8i9 exited with code 137 (OOM Killer)
+
+2026-03-06 10:18:12 ERROR [docker-daemon]: Network timeout: failed to download image registry.example.com/app:latest - connection reset by peer
+
+2026-03-06 10:20:33 CRITICAL [docker-compose]: Cannot connect to Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
+
+2026-03-06 10:22:56 INFO [docker-engine]: Successfully restarted container webapp_v2
+
+2026-03-06 10:25:18 ERROR [docker-daemon]: Unable to find image 'ubuntu:20.04' locally. Pull failed: EOF occurred in violation of protocol
+
+2026-03-06 10:28:41 WARNING [docker-gc]: Disk usage at 87% capacity. Consider pruning unused images and containers

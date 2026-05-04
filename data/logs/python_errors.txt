@@ -1,0 +1,29 @@
+Traceback (most recent call last):
+  File "/home/user/app/main.py", line 45, in load_config
+    import yaml
+ModuleNotFoundError: No module named 'yaml'
+
+Traceback (most recent call last):
+  File "/home/user/api/server.py", line 123, in connect_db
+    conn = psycopg2.connect(user=db_user, password=db_pass, host=db_host)
+  File "/usr/local/lib/python3.10/site-packages/psycopg2/__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwds)
+psycopg2.OperationalError: could not connect to server: Connection refused (0x0000274F/10063)
+  Is the server running on host "db.internal" (10.0.0.5) and accepting TCP/IP connections on port 5432?
+
+Traceback (most recent call last):
+  File "/home/user/jobs/worker.py", line 78, in process_task
+    data = json.loads(response.text)
+  File "/usr/local/lib/python3.10/json/decoder.py", line 357, decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+json.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+Traceback (most recent call last):
+  File "/home/user/scripts/migrate.py", line 234, in execute
+    with open('/data/migrations/001_init.sql', 'r') as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/data/migrations/001_init.sql'
+
+Traceback (most recent call last):
+  File "/home/user/ml/train.py", line 456, in train_model
+    raise RuntimeError(f"CUDA out of memory: {e}")
+RuntimeError: CUDA out of memory: requested 2048MB, but only 512MB available

@@ -1,0 +1,109 @@
+# Observability Link & LangSmith Configuration
+
+## Environment Setup
+- **Framework**: LangSmith (LangChain Observability)
+- **Model**: Ollama (local)
+- **Evaluation Framework**: Custom RAGAS Implementation
+- **Dataset Size**: 24 test cases
+- **Evaluation Date**: 2026-04-12
+
+## Local Development Setup
+
+Since this is a local system without cloud access to LangSmith, observability is implemented through:
+
+1. **Custom Tracer Implementation**
+   - `DummyTracer` class in evaluation_runner.py
+   - Collects execution traces locally
+   - Records latency, tool calls, and metrics
+
+2. **Trace Collection Points**
+   - Pre-query timestamp capture
+   - Retrieved context tracking
+   - Post-LLM timestamp capture
+   - Tool activation logging
+
+3. **For Production Deployment**
+   - Set LANGSMITH_API_KEY environment variable:
+     ```bash
+     export LANGSMITH_API_KEY=your_key_here
+     ```
+   - Set LANGSMITH_PROJECT environment variable:
+     ```bash
+     export LANGSMITH_PROJECT="devops-log-analyzer"
+     ```
+   - Enable automatic tracing:
+     ```python
+     from langsmith import traceable
+
+     @traceable(name="log_analysis_node", tags=["agent"])
+     def log_analysis_node(state: dict) -> dict:
+         # Agent logic here
+         pass
+     ```
+
+## Cloud LangSmith Integration (Recommended for Production)
+
+1. **Create Account**: https://smith.langchain.com
+2. **API Key**: Located in account settings
+3. **Environment Setup**:
+   ```bash
+   export LANGSMITH_API_KEY=sk_...
+   export LANGSMITH_PROJECT=devops-log-analyzer
+   export LANGSMITH_ENDPOINT=https://api.smith.langchain.com
+   ```
+
+4. **Trace Dashboard URL** (once deployed):
+   ```
+   https://smith.langchain.com/projects/devops-log-analyzer
+   ```
+
+## For Local Development Without Cloud
+
+The system uses a local tracer that stores all execution data:
+- File: `evaluation/traces.json` (if enabled)
+- Format: JSON with complete execution metadata
+- Can be exported for LangSmith batch ingestion
+
+## Trace Export Format
+
+```json
+{
+  "trace_id": "uuid",
+  "session_id": "user_session",
+  "timestamp": "2026-04-12T22:34:44",
+  "nodes": [
+    {
+      "node_name": "log_analysis",
+      "input": "user_query",
+      "output": "analysis_result",
+      "duration_ms": 150,
+      "tokens": {"input": 50, "output": 200}
+    },
+    {
+      "node_name": "retrieval",
+      "input": "parse_result",
+      "output": "retrieved_docs",
+      "duration_ms": 80,
+      "vector_db_queries": 1
+    }
+  ]
+}
+```
+
+## Next Steps for Production Observability
+
+1. **Integrate with Cloud LangSmith**:
+   - Set up account and get API key
+   - Configure environment variables
+   - Deploy to server
+
+2. **Enhanced Monitoring**:
+   - Set up alerts for latency > 5s
+   - Monitor token usage
+   - Track error rates
+   - Set up logging to data warehouse
+
+3. **Performance Optimization**:
+   - Use trace data to identify slowest nodes
+   - Implement caching for frequently retrieved documents
+   - Optimize prompt templates based on token usage data

@@ -1,0 +1,42 @@
+
+services:
+  # Agent API Service
+  agent-api:
+    build: .
+    container_name: agent-api
+    ports:
+      - "8000:8000"
+    environment:
+      - CHROMA_HOST=chroma
+      - CHROMA_PORT=8000
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+      - LLM_MODEL=orca-mini
+    volumes:
+      - ./memory:/app/memory
+      - ./vector_db:/app/vector_db
+    depends_on:
+      - chroma
+    networks:
+      - devops-net
+
+  # Vector Database Service
+  chroma:
+    image: chromadb/chroma:latest
+    container_name: chroma-server
+    ports:
+      - "8001:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+    environment:
+      - ALLOW_RESET=TRUE
+    networks:
+      - devops-net
+
+
+
+networks:
+  devops-net:
+    driver: bridge
+
+volumes:
+  chroma_data:

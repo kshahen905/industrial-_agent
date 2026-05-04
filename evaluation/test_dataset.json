@@ -1,0 +1,244 @@
+{
+  "test_cases": [
+    {
+      "id": 1,
+      "query": "ERROR [docker-daemon]: driver failed programming external connectivity on endpoint nginx_container: bind: address already in use",
+      "expected_answer": "The Docker error indicates port binding failure. Root cause: Port 80 is already in use by another process. Solution: Use 'lsof -i :80' to find the process, then restart Docker with 'sudo systemctl restart docker'.",
+      "category": "docker_error",
+      "requires_tool": true,
+      "requires_retrieval": true,
+      "complexity": "easy"
+    },
+    {
+      "id": 2,
+      "query": "Traceback: ModuleNotFoundError: No module named 'yaml'",
+      "expected_answer": "Python module import error. Root cause: The 'yaml' package is not installed. Solution: Install using 'pip install yaml' or 'pip install pyyaml'. Verify with 'python -c import yaml'.",
+      "category": "python_error",
+      "requires_tool": true,
+      "requires_retrieval": true,
+      "complexity": "easy"
+    },
+    {
+      "id": 3,
+      "query": "ERROR [nginx]: [error] 1234#1234: connect() failed (111: Connection refused) while connecting to upstream",
+      "expected_answer": "Nginx connection error. Root cause: Upstream service is not running or not accepting connections. Solution: Check upstream service with 'systemctl status', verify port binding with 'netstat -tulpn', and restart service if needed.",
+      "category": "nginx_error",
+      "requires_tool": true,
+      "requires_retrieval": true,
+      "complexity": "medium"
+    },
+    {
+      "id": 4,
+      "query": "ERROR [kernel]: Out of memory: Kill process 9876 (java) score 450 or sacrifice child",
+      "expected_answer": "Linux OOM killer event. Root cause: System has exhausted available memory. Solution: Check memory usage with 'free -h', identify memory consumers with 'ps aux --sort=-%mem', and either free memory or increase available RAM.",
+      "category": "linux_error",
+      "requires_tool": true,
+      "requires_retrieval": true,
+      "complexity": "medium"
+    },
+    {
+      "id": 5,
+      "query": "psycopg2.OperationalError: could not connect to server: Connection refused (0x0000274F/10063)",
+      "expected_answer": "PostgreSQL connection error. Root cause: Database server not running or wrong host/port. Solution: Check DB status with 'systemctl status postgresql', verify connectivity with 'psql -h localhost -U postgres', check if server is listening on port 5432.",
+      "category": "python_error",
+      "requires_tool": true,
+      "requires_retrieval": true,
+      "complexity": "medium"
+    },
+    {
+      "id": 6,
+      "query": "What should I do when Docker container exits with code 137 (OOM Killer)?",
+      "expected_answer": "Container was killed due to out-of-memory condition. Check memory with 'docker stats', increase limit with 'docker update --memory 2g container_name', monitor with 'docker inspect container_name | grep Memory', and optimize application memory usage.",
+      "category": "docker_error",
+      "requires_tool": true,
+      "requires_retrieval": true,
+      "complexity": "medium"
+    },
+    {
+      "id": 7,
+      "query": "How do I troubleshoot nginx configuration errors?",
+      "expected_answer": "Test nginx configuration with 'sudo nginx -t', check service status with 'systemctl status nginx', view logs with 'tail -f /var/log/nginx/error.log', and reload with 'systemctl reload nginx' after fixing config.",
+      "category": "nginx_error",
+      "requires_tool": true,
+      "requires_retrieval": true,
+      "complexity": "easy"
+    },
+    {
+      "id": 8,
+      "query": "json.JSONDecodeError: Expecting value: line 1 column 1 (char 0)",
+      "expected_answer": "JSON parsing error. Root cause: API returned empty or invalid JSON response. Solution: Log raw response before parsing, check HTTP status code, verify content-type header, and handle empty responses appropriately.",
+      "category": "python_error",
+      "requires_tool": true,
+      "requires_retrieval": true,
+      "complexity": "medium"
+    },
+    {
+      "id": 9,
+      "query": "FileNotFoundError: [Errno 2] No such file or directory: '/data/migrations/001_init.sql'",
+      "expected_answer": "File not found error. Root cause: File path is incorrect or file doesn't exist. Solution: Verify path with 'ls -la /data/migrations/', check working directory with 'pwd', use absolute paths when possible, and ensure file exists before opening.",
+      "category": "python_error",
+      "requires_tool": true,
+      "requires_retrieval": true,
+      "complexity": "easy"
+    },
+    {
+      "id": 10,
+      "query": "RuntimeError: CUDA out of memory: requested 2048MB, but only 512MB available",
+      "expected_answer": "GPU memory exhausted. Root cause: Model/batch too large for GPU VRAM. Solution: Reduce batch size, use gradient checkpointing, temporarily move to CPU, clear cache with 'torch.cuda.empty_cache()', or check available memory with 'nvidia-smi'.",
+      "category": "python_error",
+      "requires_tool": true,
+      "requires_retrieval": true,
+      "complexity": "hard"
+    },
+    {
+      "id": 11,
+      "query": "How do I fix Docker image pull failures?",
+      "expected_answer": "Image pull can fail for network, auth, or registry issues. Solution: Check connectivity with 'curl registry.example.com', verify credentials with 'docker login', try different registry mirror, check Docker info with 'docker info', and retry pull.",
+      "category": "docker_error",
+      "requires_tool": true,
+      "requires_retrieval": true,
+      "complexity": "medium"
+    },
+    {
+      "id": 12,
+      "query": "FATAL: remaining connection slots are reserved for non-replication superuser connections",
+      "expected_answer": "PostgreSQL at max connections. Root cause: Too many active connections. Solution: Check connections with 'SELECT count(*) FROM pg_stat_activity;', terminate idle connections, increase max_connections setting, and investigate connection leaks in application.",
+      "category": "linux_error",
+      "requires_tool": true,
+      "requires_retrieval": true,
+      "complexity": "hard"
+    },
+    {
+      "id": 13,
+      "query": "user NOT in sudoers file. This incident will be reported.",
+      "expected_answer": "Permission denied error. Root cause: User doesn't have sudo privileges. Solution: Check user groups with 'groups username', add to sudoers with 'sudo usermod -aG sudo username', edit sudoers safely with 'sudo visudo'.",
+      "category": "linux_error",
+      "requires_tool": true,
+      "requires_retrieval": true,
+      "complexity": "easy"
+    },
+    {
+      "id": 14,
+      "query": "Cannot set DNS servers to 8.8.8.8: Operation not permitted",
+      "expected_answer": "DNS configuration permission denied. Root cause: Insufficient permissions to modify DNS. Solution: Check current DNS with 'cat /etc/resolv.conf', use systemd-resolved with 'systemd-resolve --status', restart resolver with 'systemctl restart systemd-resolved'.",
+      "category": "linux_error",
+      "requires_tool": true,
+      "requires_retrieval": true,
+      "complexity": "medium"
+    },
+    {
+      "id": 15,
+      "query": "How can I diagnose Docker disk space issues?",
+      "expected_answer": "Docker uses significant disk space for images and containers. Check with 'df -h', run 'docker system prune' to cleanup, remove unused images with 'docker image prune', and monitor with 'docker system df'.",
+      "category": "docker_error",
+      "requires_tool": true,
+      "requires_retrieval": true,
+      "complexity": "easy"
+    },
+    {
+      "id": 16,
+      "query": "What are best practices for Python database connection error handling?",
+      "expected_answer": "Implement connection pooling, add retry logic with exponential backoff, verify credentials before connecting, test with 'psql' CLI, check network connectivity, and log detailed error context for debugging.",
+      "category": "python_error",
+      "requires_tool": false,
+      "requires_retrieval": true,
+      "complexity": "hard"
+    },
+    {
+      "id": 17,
+      "query": "How do I monitor and optimize Docker container performance?",
+      "expected_answer": "Use 'docker stats' for real-time metrics, check logs with 'docker logs', adjust CPU/memory limits with 'docker update', use 'docker inspect' for detailed info, and profile with '--memory-swap' or resource constraints.",
+      "category": "docker_error",
+      "requires_tool": true,
+      "requires_retrieval": true,
+      "complexity": "medium"
+    },
+    {
+      "id": 18,
+      "query": "nginx.service: Main process exited, code=exited, status=1/FAILURE",
+      "expected_answer": "Nginx service failed to start. Root cause: Configuration error or missing dependencies. Solution: Test config with 'sudo nginx -t', check logs with 'journalctl -u nginx -n 50', verify syntax, restart with 'systemctl restart nginx'.",
+      "category": "nginx_error",
+      "requires_tool": true,
+      "requires_retrieval": true,
+      "complexity": "medium"
+    },
+    {
+      "id": 19,
+      "query": "What debugging techniques should I use for Python import errors?",
+      "expected_answer": "Check Python path with 'sys.path', use 'pip list' to verify packages, test imports interactively, check virtual environment activation, use 'python -c import module_name', and ensure correct package names (e.g., pyyaml vs yaml).",
+      "category": "python_error",
+      "requires_tool": false,
+      "requires_retrieval": true,
+      "complexity": "medium"
+    },
+    {
+      "id": 20,
+      "query": "How do I troubleshoot slow Docker container startup?",
+      "expected_answer": "Check startup logs with 'docker logs container_name', monitor with 'docker stats', verify image size with 'docker images', optimize Dockerfile layers, use 'docker build --progress=plain', and profile with timing commands.",
+      "category": "docker_error",
+      "requires_tool": true,
+      "requires_retrieval": true,
+      "complexity": "medium"
+    },
+    {
+      "id": 21,
+      "query": "ERROR: Cannot connect to Docker daemon at unix:///var/run/docker.sock",
+      "expected_answer": "Docker daemon not accessible. Root cause: Docker not running or socket permission issue. Solution: Check status with 'systemctl status docker', start with 'systemctl start docker', verify socket with 'ls -la /var/run/docker.sock', add user to docker group.",
+      "category": "docker_error",
+      "requires_tool": true,
+      "requires_retrieval": true,
+      "complexity": "easy"
+    },
+    {
+      "id": 22,
+      "query": "How should I approach systematic Linux system troubleshooting?",
+      "expected_answer": "Follow structured approach: check service status, review logs, verify network connectivity, monitor resource usage (CPU, memory, disk), check permissions, and use tools like systemctl, journalctl, netstat, and top for diagnosis.",
+      "category": "linux_error",
+      "requires_tool": false,
+      "requires_retrieval": true,
+      "complexity": "hard"
+    },
+    {
+      "id": 23,
+      "query": "What is the difference between rm -rf and docker system prune for cleanup?",
+      "expected_answer": "rm -rf is destructive file deletion; docker system prune safely removes unused containers/images. Use 'docker system prune' for containers and 'docker image prune' for images. Always backup before destructive operations.",
+      "category": "docker_error",
+      "requires_tool": true,
+      "requires_retrieval": true,
+      "complexity": "medium"
+    },
+    {
+      "id": 24,
+      "query": "How do I debug Python exceptions with full stack traces?",
+      "expected_answer": "Import traceback module, use 'traceback.print_exc()' to display full trace, log with logging.exception(), use pdb.set_trace() for interactive debugging, capture with sys.exc_info(), and review all lines in traceback from bottom up.",
+      "category": "python_error",
+      "requires_tool": false,
+      "requires_retrieval": true,
+      "complexity": "medium"
+    }
+  ],
+  "metadata": {
+    "total_test_cases": 24,
+    "categories": {
+      "docker_error": 8,
+      "python_error": 10,
+      "nginx_error": 3,
+      "linux_error": 3
+    },
+    "complexity_distribution": {
+      "easy": 6,
+      "medium": 15,
+      "hard": 3
+    },
+    "tool_usage": {
+      "requires_tool": 20,
+      "no_tool": 4
+    },
+    "retrieval_usage": {
+      "requires_retrieval": 24,
+      "no_retrieval": 0
+    },
+    "created_date": "2026-04-12",
+    "version": "1.0"
+  }
+}

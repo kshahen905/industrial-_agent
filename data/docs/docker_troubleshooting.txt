@@ -1,0 +1,101 @@
+# Docker Troubleshooting Guide
+
+## Port Binding Errors
+
+### Error: "driver failed programming external connectivity"
+
+This error typically indicates that Docker cannot bind to the requested port because:
+1. The port is already in use by another process
+2. Firewall rules are blocking the port
+3. Docker daemon is not properly configured
+
+**Solution Steps:**
+1. Identify the process using the port
+2. Stop the conflicting process or use a different port
+3. Restart the Docker daemon
+
+**Commands:**
+```
+lsof -i :80                    # Find process using port 80
+netstat -tulpn | grep :80      # Alternative method
+sudo systemctl restart docker  # Restart Docker daemon
+docker port <container_name>   # Check container port mappings
+```
+
+## Container Memory Issues
+
+### Error: "Container exited with code 137 (OOM Killer)"
+
+This indicates the container ran out of memory and was killed by the Linux OOM killer.
+
+**Solution Steps:**
+1. Check Docker memory limits
+2. Increase container memory allocation
+3. Optimize application memory usage
+
+**Commands:**
+```
+docker stats                   # View container memory usage
+docker update --memory 2g <container_name>  # Increase memory limit
+docker inspect <container_name> | grep Memory
+```
+
+## Docker Daemon Connection Issues
+
+### Error: "Cannot connect to Docker daemon"
+
+This occurs when the Docker socket is not accessible or the daemon is not running.
+
+**Solution Steps:**
+1. Check if Docker daemon is running
+2. Verify socket permissions
+3. Restart Docker service
+
+**Commands:**
+```
+sudo systemctl status docker   # Check service status
+sudo systemctl start docker    # Start Docker
+ls -la /var/run/docker.sock    # Check socket permissions
+sudo usermod -aG docker $USER  # Add user to docker group
+```
+
+## Image Pull Failures
+
+### Error: "Unable to find image" or "Pull failed"
+
+This can happen due to network issues, authentication problems, or registry unavailability.
+
+**Solution Steps:**
+1. Check network connectivity
+2. Verify docker credentials if using private registry
+3. Check registry health
+4. Try pulling from different registry mirror
+
+**Commands:**
+```
+docker pull ubuntu:20.04       # Attempt pull again
+docker login registry.example.com  # Login to private registry
+docker info                    # Check Docker configuration
+curl -I https://registry.hub.docker.com  # Test connectivity
+```
+
+## Disk Space Issues
+
+### Warning: "Disk usage at capacity"
+
+Docker images and containers consume disk space. Cleanup is necessary.
+
+**Solution Steps:**
+1. Remove unused containers
+2. Remove dangling images
+3. Prune build cache
+4. Set up automatic cleanup
+
+**Commands:**
+```
+docker system prune            # Remove stopped containers and dangling images
+docker image prune --all       # Remove unused images
+docker container prune         # Remove stopped containers
+docker volume prune            # Remove unused volumes
+df -h                          # Check disk space
+```

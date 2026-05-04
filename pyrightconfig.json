@@ -1,0 +1,14 @@
+{
+  "typeCheckingMode": "basic",
+  "pythonVersion": "3.10",
+  "pythonPath": "C:\\Program Files\\Python310\\python.exe",
+  "reportMissingImports": false,
+  "reportMissingTypeStubs": false,
+  "executionEnvironments": [
+    {
+      "root": ".",
+      "pythonVersion": "3.10",
+      "pythonPath": "C:\\Program Files\\Python310\\python.exe"
+    }
+  ]
+}

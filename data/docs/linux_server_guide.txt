@@ -1,0 +1,128 @@
+# Linux Server Administration Guide
+
+## Connection and Networking Issues
+
+### Error: "Connection refused" from nginx/Apache
+
+This error indicates that the upstream service is not listening on the expected port or is not running.
+
+**Diagnosis:**
+- Check if upstream service is running
+- Verify port bindings
+- Check firewall rules
+- Review service logs
+
+**Commands:**
+```
+sudo systemctl status nginx        # Check service status
+sudo systemctl status postgresql   # Check PostgreSQL
+netstat -tulpn                     # Show listening ports
+sudo ufw status                    # Check firewall rules
+sudo systemctl restart nginx       # Restart service
+tail -f /var/log/nginx/error.log   # View live error logs
+```
+
+## Service Failures
+
+### Error: "Main process exited with code 1"
+
+This indicates a service failed to start properly.
+
+**Solution Steps:**
+1. Check service status and logs
+2. Verify configuration files
+3. Check permissions
+4. Review system resources
+
+**Commands:**
+```
+sudo systemctl status nginx        # Get error details
+sudo nginx -t                      # Test configuration
+sudo journalctl -u nginx -n 50     # View service logs
+sudo journalctl -u nginx --no-pager | tail -20
+```
+
+## Out of Memory Issues
+
+### Error: "Out of memory: Kill process"
+
+The system has exhausted available memory and is killing processes to free space.
+
+**Solution Steps:**
+1. Identify memory-consuming processes
+2. Optimize application memory usage
+3. Increase available memory
+4. Set up memory limits
+
+**Commands:**
+```
+free -h                            # View memory usage
+ps aux --sort=-%mem | head          # Show top memory consumers
+top -o %MEM                        # Interactive memory view
+vmstat 1 5                         # View memory statistics
+ps -p <PID> -o rss=                # Check specific process memory
+```
+
+## Database Connection Issues
+
+### Error: "Connection slots reserved for superusers"
+
+PostgreSQL is at max connections and is reserving slots for admin users.
+
+**Solution Steps:**
+1. Check active connections
+2. Terminate idle connections
+3. Increase max connections if appropriate
+4. Investigate connection leaks in application
+
+**Commands:**
+```
+sudo -u postgres psql              # Connect as postgres
+SELECT count(*) FROM pg_stat_activity;  # Check connections
+SELECT * FROM pg_stat_activity WHERE state='idle';  # Find idle connections
+SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE pid<>pg_backend_pid();
+ALTER SYSTEM SET max_connections=300;  # Increase limit
+```
+
+## SSH and Access Issues
+
+### Error: "Invalid user" or "user not in sudoers"
+
+User permissions problem or authentication issue.
+
+**Solution Steps:**
+1. Verify user exists in system
+2. Check sudoers configuration
+3. Review SSH key permissions
+4. Monitor for brute force attempts
+
+**Commands:**
+```
+id username                        # Check if user exists
+groups username                    # Check user groups
+sudo usermod -aG sudo username     # Add user to sudoers
+sudo visudo                        # Edit sudoers safely
+sudo grep sudo /etc/group          # List sudoers group members
+```
+
+## DNS Resolution Issues
+
+### Error: "Cannot set DNS servers" or DNS resolution failure
+
+DNS configuration or resolver issues.
+
+**Solution Steps:**
+1. Check current DNS settings
+2. Verify network connectivity
+3. Reconfigure resolver
+4. Test DNS queries
+
+**Commands:**
+```
+cat /etc/resolv.conf               # View DNS configuration
+systemd-resolve --status           # Check systemd-resolved status
+nslookup example.com               # Test DNS resolution
+dig example.com                    # Detailed DNS query
+resolvectl status                  # Check resolver status
+sudo systemctl restart systemd-resolved  # Restart resolver
+```

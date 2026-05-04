@@ -1,0 +1,178 @@
+# Python Debugging and Troubleshooting Guide
+
+## Module Import Errors
+
+### Error: "ModuleNotFoundError: No module named 'X'"
+
+The required Python module is not installed in the current environment.
+
+**Root Cause:**
+- Package not installed
+- Wrong Python version
+- Virtual environment not activated
+- Package name differs from import name
+
+**Solution Steps:**
+1. Verify package name (import name may differ from pip package name)
+2. Activate virtual environment
+3. Install missing package
+4. Check Python version compatibility
+
+**Commands:**
+```
+pip list                           # List installed packages
+pip install package_name           # Install package
+python -m pip install --upgrade pip
+python -c "import yaml; print(yaml.__file__)"  # Verify import
+python --version                   # Check Python version
+source venv/bin/activate           # Activate virtual environment (Linux/Mac)
+venv\Scripts\activate              # Activate on Windows
+```
+
+## Database Connection Errors
+
+### Error: "psycopg2.OperationalError: could not connect to server"
+
+Cannot establish connection to PostgreSQL database.
+
+**Root Cause:**
+- Database server not running
+- Wrong host/port
+- Network connectivity issue
+- Firewall blocking connection
+- Database not accepting connections
+
+**Solution Steps:**
+1. Verify database server is running
+2. Check host and port are correct
+3. Test network connectivity
+4. Check connection credentials
+5. Review database logs
+
+**Commands:**
+```
+psql -h localhost -U postgres      # Test connection
+ping 10.0.0.5                      # Test network connectivity
+telnet db.internal 5432            # Test port accessibility
+sudo systemctl status postgresql   # Check DB service
+sudo systemctl start postgresql    # Start database
+tail -f /var/log/postgresql/postgresql.log  # View DB logs
+SELECT version();                  # Query database
+```
+
+## JSON Parsing Errors
+
+### Error: "json.JSONDecodeError: Expecting value"
+
+Response body is empty or contains invalid JSON.
+
+**Root Cause:**
+- API returned empty response
+- Server returned error page (HTML) instead of JSON
+- Response encoding issue
+- Premature connection close
+
+**Solution Steps:**
+1. Check HTTP status code
+2. Verify response content type
+3. Log raw response body
+4. Check API endpoint
+5. Verify request headers
+
+**Commands:**
+```
+import requests
+response = requests.get(url)
+print(response.status_code)        # Check status
+print(response.headers)            # Check content-type
+print(response.text)               # View raw response
+response.json()                    # Parse JSON
+```
+
+## File Not Found Errors
+
+### Error: "FileNotFoundError: [Errno 2]"
+
+Application cannot find required file at specified path.
+
+**Root Cause:**
+- File path is incorrect
+- File doesn't exist
+- Working directory is wrong
+- File permissions issue
+
+**Solution Steps:**
+1. Verify file path (use absolute paths when possible)
+2. Check if file exists
+3. Verify working directory
+4. Check file permissions
+5. Create file if it's expected to exist
+
+**Commands:**
+```
+os.path.exists('/path/to/file')    # Check file existence
+os.getcwd()                        # Get current working directory
+os.listdir('/path/to/dir')         # List directory contents
+import os; os.makedirs('/path', exist_ok=True)  # Create directories
+chmod 644 /path/to/file            # Fix file permissions
+ls -la /path/to/file               # Check file details
+```
+
+## Memory and GPU Issues
+
+### Error: "CUDA out of memory" or "RuntimeError about memory"
+
+GPU or system memory exhausted.
+
+**Root Cause:**
+- Model too large for GPU memory
+- Memory leak in code
+- Too many models loaded simultaneously
+- Batch size too large
+
+**Solution Steps:**
+1. Reduce batch size
+2. Use gradient checkpointing
+3. Move to CPU if possible temporarily
+4. Clear GPU cache
+5. Monitor memory usage
+6. Upgrade hardware if necessary
+
+**Commands:**
+```
+import torch
+print(torch.cuda.is_available())   # Check GPU availability
+print(torch.cuda.get_device_name(0))  # Get GPU info
+torch.cuda.empty_cache()           # Clear cache
+torch.cuda.memory_allocated()      # Check memory usage
+nvidia-smi                         # View GPU usage (if NVIDIA)
+python -c "import psutil; print(psutil.virtual_memory())"  # System RAM
+```
+
+## Debugging Best Practices
+
+### General Debugging Steps
+
+1. **Collect Information:**
+   - Full error message and traceback
+   - Python version
+   - Platform (Windows/Linux/Mac)
+   - Installed package versions
+
+2. **Isolate the Problem:**
+   - Minimal reproducible example
+   - Test in clean virtual environment
+   - Check with different Python versions
+
+3. **Use Debugging Tools:**
+   ```
+   import pdb; pdb.set_trace()      # Debugger
+   import traceback; traceback.print_exc()  # Print full traceback
+   logging.basicConfig(level=logging.DEBUG)  # Enable debug logging
+   ```
+
+4. **Common Sources:**
+   - Check official documentation
+   - Search Stack Overflow
+   - Review application logs
+   - Check library GitHub issues

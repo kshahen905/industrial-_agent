@@ -1,0 +1,17 @@
+2026-03-06 09:45:12 ERROR [nginx]: [error] 1234#1234: *567 connect() failed (111: Connection refused) while connecting to upstream, client: 192.168.1.100, server: app.example.com, request: "GET /api/users HTTP/1.1"
+
+2026-03-06 09:47:33 CRITICAL [systemd]: nginx.service: Main process exited, code=exited, status=1/FAILURE
+
+2026-03-06 09:50:15 WARNING [systemd]: nginx.service: Unit entered failed state.
+
+2026-03-06 09:52:44 ERROR [sshd]: Invalid user admin from 203.0.113.45 port 54321
+
+2026-03-06 09:55:22 ERROR [kernel]: Out of memory: Kill process 9876 (java) score 450 or sacrifice child
+
+2026-03-06 09:58:06 CRITICAL [postgresql]: FATAL: remaining connection slots are reserved for non-replication superuser connections
+
+2026-03-06 10:01:33 ERROR [apache2]: [core:warn] [pid 5678:tid 140456789012345] AH00111: Config file is empty
+
+2026-03-06 10:04:15 WARNING [systemd-resolved]: Cannot set DNS servers to 8.8.8.8: Operation not permitted
+
+2026-03-06 10:07:42 ERROR [sudo]: user NOT in sudoers file. This incident will be reported.
