@@ -42,6 +42,12 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Check for Lite Mode (for demo in low-resource environments)
+import os
+LITE_MODE = os.getenv("LITE_MODE", "false").lower() == "true"
+if LITE_MODE:
+    logger.info("⚠️ RUNNING IN LITE MODE (Mock Agent Enabled)")
+
 # ==================== GLOBAL STATE ====================
 
 # These will be initialized in lifespan
@@ -65,8 +71,13 @@ async def lifespan(app: FastAPI):
     
     # ========== STARTUP ==========
     logger.info("=" * 70)
-    logger.info("🚀 FastAPI Application Starting")
+    logger.info("🚀 FastAPI Application Starting" + (" (LITE MODE)" if LITE_MODE else ""))
     logger.info("=" * 70)
+    
+    if LITE_MODE:
+        logger.info("✓ Application started in Lite Mode. Skipping heavy AI initialization.")
+        yield
+        return
     
     try:
         # Initialize memory manager (persistence layer)
@@ -339,9 +350,27 @@ async def chat(request: ChatRequest) -> ChatResponse:
         HTTPException: If graph is not initialized or analysis fails
     """
     
-    if graph is None:
+    if graph is None and not LITE_MODE:
         logger.error("Graph not initialized")
         raise HTTPException(status_code=503, detail="Service not ready. Graph initialization failed.")
+    
+    if LITE_MODE:
+        logger.info(f"[{request.thread_id}] Handling request in LITE MODE")
+        # Return a smart mock response
+        mock_response = f"LITE MODE ANALYSIS: I have analyzed the log: '{request.message[:50]}...'. Since the system is running in Lite Mode for demo purposes, I am providing this pre-formatted technical response. Recommendation: Check file permissions and restart the service."
+        return ChatResponse(
+            thread_id=request.thread_id,
+            status="success",
+            final_answer=mock_response,
+            analysis_metadata=AnalysisMetadata(
+                component="System",
+                error_type="Demo",
+                error_category="Information",
+                timestamp=datetime.utcnow().isoformat() + "Z"
+            ),
+            processing_time_seconds=0.1,
+            node_outputs=["[LITE_MODE] Analysis completed using mock agent."]
+        )
     
     start_time = time.time()
     
