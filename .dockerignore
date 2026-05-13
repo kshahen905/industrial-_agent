@@ -1,8 +1,27 @@
-venv/
+# Python
 __pycache__/
-.pytest_cache/
-memory/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Databases and Local Data
 vector_db/
-.git/
+checkpoint_db.sqlite
+collaboration_trace.log
+api_test_results.txt
+eval_results.json
+
+# IDE
 .vscode/
-*.pyc
+.idea/
+.pytest_cache/
+
+# Git
+.git/
+.gitignore

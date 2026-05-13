@@ -11,7 +11,6 @@ from typing import List
 
 from langchain_community.document_loaders import TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_huggingface import HuggingFaceEmbeddings
 import chromadb
 
 logging.basicConfig(level=logging.INFO)
@@ -26,11 +25,13 @@ class DataIngestionPipeline:
         self.vector_db_path = Path(vector_db_path)
         self.vector_db_path.mkdir(parents=True, exist_ok=True)
 
-        # Initialize embeddings
-        logger.info("Loading embeddings model...")
-        self.embeddings = HuggingFaceEmbeddings(
-            model_name="all-MiniLM-L6-v2",
-            model_kwargs={"device": "cpu"},
+        # Initialize Ollama embeddings
+        logger.info("Initializing Ollama embeddings...")
+        from langchain_ollama import OllamaEmbeddings
+        from config import OLLAMA_BASE_URL, EMBEDDINGS_MODEL
+        self.embeddings = OllamaEmbeddings(
+            model=EMBEDDINGS_MODEL,
+            base_url=OLLAMA_BASE_URL
         )
 
         # Initialize ChromaDB with new API

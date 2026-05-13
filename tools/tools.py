@@ -12,7 +12,6 @@ from pathlib import Path
 
 from pydantic import BaseModel, Field, validator
 from langchain_core.tools import tool
-from langchain_huggingface import HuggingFaceEmbeddings
 import chromadb
 
 logging.basicConfig(level=logging.INFO)
@@ -107,15 +106,17 @@ class VectorSearchTool:
     def __init__(self, vector_db_path: str):
         self.vector_db_path = Path(vector_db_path)
 
-        # Initialize embeddings
+        # Initialize Ollama embeddings
         try:
-            self.embeddings = HuggingFaceEmbeddings(
-                model_name="all-MiniLM-L6-v2",
-                model_kwargs={"device": "cpu"},
+            from langchain_ollama import OllamaEmbeddings
+            from config import OLLAMA_BASE_URL, EMBEDDINGS_MODEL
+            self.embeddings = OllamaEmbeddings(
+                model=EMBEDDINGS_MODEL,
+                base_url=OLLAMA_BASE_URL
             )
-            logger.info("✓ Embeddings model loaded successfully")
+            logger.info(f"✓ Ollama Embeddings initialized (model: {EMBEDDINGS_MODEL})")
         except Exception as e:
-            logger.error(f"✗ Failed to load embeddings: {e}")
+            logger.error(f"✗ Failed to load Ollama embeddings: {e}")
             raise
 
         # Initialize ChromaDB with new API

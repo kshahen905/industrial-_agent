@@ -78,9 +78,9 @@ VECTOR_DB_COLLECTION_NAME = "devops_docs"
 CHROMA_HOST = os.getenv("CHROMA_HOST", None)
 CHROMA_PORT = int(os.getenv("CHROMA_PORT", "8000"))
 
-# Embeddings model
-EMBEDDINGS_MODEL = "all-MiniLM-L6-v2"
-EMBEDDINGS_DEVICE = "cpu"  # Change to "cuda" if you have GPU
+# Embeddings model (Ollama-based)
+EMBEDDINGS_MODEL = os.getenv("EMBEDDINGS_MODEL", "nomic-embed-text")
+EMBEDDINGS_DEVICE = "cpu"
 
 # ==================== VECTOR SEARCH ====================
 

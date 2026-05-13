@@ -1,6 +1,5 @@
-
 services:
-  # Agent API Service (LITE MODE)
+  # Agent API Service
   agent-api:
     build: 
       context: .
@@ -9,15 +8,39 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - LITE_MODE=true
+      - LITE_MODE=false
       - LLM_MODEL=orca-mini
       - OLLAMA_BASE_URL=http://host.docker.internal:11434
+      - CHROMA_HOST=chromadb
+      - CHROMA_PORT=8000
+      - RUN_INGESTION=true
+    volumes:
+      - ./data:/app/data
+      - checkpoint-data:/app/memory
     networks:
       - devops-net
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    depends_on:
+      - chromadb
+    restart: unless-stopped
+
+  # Standalone ChromaDB Service
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: chromadb
+    ports:
+      - "8001:8000"
+    volumes:
+      - chroma-data:/chroma/chroma
+    networks:
+      - devops-net
     restart: unless-stopped
 
 networks:
   devops-net:
     driver: bridge
+
+volumes:
+  chroma-data:
+  checkpoint-data:
